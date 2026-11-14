@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // One document per user. Only the owner can access it; writing requires a verified email
+    // (Google accounts are verified automatically) and only the fields RigForge uses.
+    match /users/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasOnly(['savedBuilds', 'owned', 'current', 'updatedAt']);
+    }
+  }
+}

@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Theme tokens. Dark = "black metal" build, light = "aluminium" build.
+   Utilities (bg-panel, text-ink, border-ink/10 …) read these variables,
+   so every component switches theme without per-component code.
+------------------------------------------------------------------- */
+:root {
+  --c-void: #070a10;
+  --c-panel: #0d121b;
+  --c-panel2: #121926;
+  --c-line: #1f2a3a;
+  --c-ink: #e6edf7;
+  --c-ink2: #c3cede;
+  --c-mute: #8b9bb3;
+  --c-accent: #38e8c6;
+  --c-accent2: #7c8cff;
+  --c-onaccent: #04120f;
+  --series-a: #3987e5;
+  --series-b: #d95926;
+  --glass: rgba(13, 18, 27, 0.72);
+  --grid-line: rgba(255, 255, 255, 0.025);
+  --viewer-a: rgba(56, 232, 198, 0.10);
+  --viewer-b: rgba(124, 140, 255, 0.12);
+  --viewer-base: #070a10;
+  color-scheme: dark;
+}
+:root.light {
+  --c-void: #e9edf2;
+  --c-panel: #ffffff;
+  --c-panel2: #f3f5f8;
+  --c-line: #d6dce4;
+  --c-ink: #0f172a;
+  --c-ink2: #334155;
+  --c-mute: #5b687a;
+  --c-accent: #0d9e8a;
+  --c-accent2: #4f5bd5;
+  --c-onaccent: #ffffff;
+  --series-a: #2a78d6;
+  --series-b: #eb6834;
+  --glass: rgba(255, 255, 255, 0.78);
+  --grid-line: rgba(15, 23, 42, 0.05);
+  --viewer-a: rgba(13, 158, 138, 0.12);
+  --viewer-b: rgba(79, 91, 213, 0.10);
+  --viewer-base: #dfe4ea;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-void: var(--c-void);
+  --color-panel: var(--c-panel);
+  --color-panel2: var(--c-panel2);
+  --color-line: var(--c-line);
+  --color-ink: var(--c-ink);
+  --color-ink2: var(--c-ink2);
+  --color-mute: var(--c-mute);
+  --color-accent: var(--c-accent);
+  --color-accent2: var(--c-accent2);
+  --color-onaccent: var(--c-onaccent);
+  --color-sa: var(--series-a);
+  --color-sb: var(--series-b);
+}
+@theme {
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-display: "Space Grotesk", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+body { background: var(--c-void); color: var(--c-ink); font-family: var(--font-sans); transition: background-color .25s ease, color .25s ease; }
+
+.bg-grid {
+  background-image:
+    radial-gradient(circle at 20% 0%, var(--viewer-a), transparent 45%),
+    radial-gradient(circle at 85% 20%, var(--viewer-b), transparent 45%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: auto, auto, 40px 40px, 40px 40px;
+}
+.viewer-bg {
+  background:
+    radial-gradient(ellipse at 50% 35%, var(--viewer-a), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, var(--viewer-b), transparent 55%),
+    var(--viewer-base);
+}
+.text-gradient { background: linear-gradient(100deg, var(--c-ink) 10%, var(--c-accent) 55%, var(--c-accent2) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.glass { background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+
+/* ------------------------------------------------------------------
+   Hardware material swatches – each part category looks like the
+   real thing: nickel IHS, copper, PCB, heat spreaders, glass, RGB.
+------------------------------------------------------------------- */
+.mat { position: relative; overflow: hidden; display: grid; place-items: center; border-radius: 0.75rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.35); }
+.mat::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
+.mat > * { position: relative; z-index: 1; }
+.mat-cpu { color: #1f2937; background: repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 1px, transparent 1px 3px), linear-gradient(135deg, #f4f6f9, #a9b2bd 45%, #e3e7ec 62%, #8a939e); }
+.mat-cpu::after { box-shadow: inset 0 0 0 2px #c9a227; opacity: .55; }
+.mat-cooler { color: #fff4ea; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 4px), linear-gradient(135deg, #f0ae78, #b8652f 45%, #e59a5f 62%, #8a4a22); }
+.mat-motherboard { color: #d9fbe5; background: repeating-linear-gradient(45deg, rgba(150,255,190,.13) 0 1px, transparent 1px 7px), repeating-linear-gradient(-45deg, rgba(150,255,190,.08) 0 1px, transparent 1px 11px), radial-gradient(circle at 75% 25%, #2a8c58, #0e4a2c 70%); }
+.mat-motherboard::after { background: radial-gradient(circle at 18% 78%, #d4af37 0 2px, transparent 3px), radial-gradient(circle at 84% 70%, #d4af37 0 2px, transparent 3px); }
+.mat-ram { color: #f5f3ff; background: linear-gradient(180deg, #ff4fd8, #7c5cff 22%, #2a2e36 24%, #1c1f25 100%); }
+.mat-ram::after { background: repeating-linear-gradient(90deg, transparent 0 5px, rgba(212,175,55,.75) 5px 6px) bottom / 100% 3px no-repeat; }
+.mat-gpu { color: #e8edf3; background: radial-gradient(circle at 30% 55%, #3a3f48 0 30%, transparent 31%), radial-gradient(circle at 72% 55%, #3a3f48 0 30%, transparent 31%), linear-gradient(160deg, #2b3038, #15171b); }
+.mat-gpu::after { background: linear-gradient(90deg, #76b900, #22d3ee, #ed1c24) bottom / 100% 3px no-repeat; }
+.mat-storage { color: #f2fff8; background: linear-gradient(90deg, #d4af37 0 14%, transparent 14%), repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 6px, transparent 6px 9px), linear-gradient(135deg, #1b2a23, #0b1310); }
+.mat-psu { color: #fef9e7; background: linear-gradient(135deg, transparent 0 58%, #e7b416 58% 74%, transparent 74%), repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.07) 0 1px, transparent 1px 4px), linear-gradient(160deg, #26282d, #121316); }
+.mat-case { color: #eaf6ff; background: linear-gradient(120deg, rgba(255,255,255,.35) 0 18%, transparent 18% 30%, rgba(255,255,255,.12) 30% 34%, transparent 34%), linear-gradient(160deg, #5c6b7d, #2a333f); }
+.mat-fans { color: #fff; background: radial-gradient(circle, #1b1d22 0 38%, transparent 39%), conic-gradient(#ff3d7f, #ff8a00, #ffe600, #38e8c6, #00b7ff, #a855f7, #ff3d7f); }
+.mat-fans::after { background: radial-gradient(circle, transparent 0 52%, #15171c 53%); }
+:root.light .mat { box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(0,0,0,.18), 0 1px 3px rgba(15,23,42,.18); }
+
+/* brushed-aluminium & black-metal surfaces for hero panels */
+.surface-metal { background: repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px), linear-gradient(180deg, var(--c-panel), var(--c-panel2)); }
+
+/* ------------------------------------------------------------------
+   Light-mode contrast for tinted text tones used on status chips
+------------------------------------------------------------------- */
+:root.light .text-teal-100, :root.light .text-teal-200, :root.light .text-teal-300 { color: #0f766e; }
+:root.light .text-emerald-300 { color: #047857; }
+:root.light .text-amber-100, :root.light .text-amber-200, :root.light .text-amber-300 { color: #b45309; }
+:root.light .text-rose-200, :root.light .text-rose-300 { color: #be123c; }
+:root.light .text-indigo-200, :root.light .text-indigo-300 { color: #4338ca; }
+:root.light .text-orange-300 { color: #c2410c; }
+:root.light .text-lime-300 { color: #4d7c0f; }
+:root.light .text-yellow-300 { color: #a16207; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--c-mute) 45%, transparent); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+input[type="range"] { accent-color: var(--c-accent); }
+:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

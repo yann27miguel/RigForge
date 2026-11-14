@@ -1,0 +1,8 @@
+name = "rigforge-specs"
+main = "specs-worker.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+# Comma-separated list of sites allowed to call this worker, e.g. your GitHub Pages URL.
+# Use "*" only for local testing.
+ALLOWED_ORIGIN = "https://yann27miguel.github.io,http://localhost:5173"
