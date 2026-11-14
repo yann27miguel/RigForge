@@ -71,13 +71,13 @@ wrangler deploy
 ```
 Put the printed URL in `.env.local` (and as the repo secret `VITE_SPECS_WORKER_URL`). The worker only fetches HTTPS pages on its shop/manufacturer allowlist (`worker/specs-worker.js`) and only answers your own site. Some shops (e.g. Amazon) block automated requests – users can then paste the specs instead.
 
-## Deploy to GitHub Pages
+## Deploy to GitHub Pages (free hosting)
 
-1. Push the project to a GitHub repository (branch `main`).
-2. In the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. The included workflow `.github/workflows/deploy.yml` builds and publishes on every push.
+Live site: **https://yann27miguel.github.io/RigForge/**
 
-`vite.config.ts` uses `base: './'`, so it works under any repository name.
+The workflow `.github/workflows/deploy.yml` builds the app on every push to `main` and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves for free. If the site ever shows a 404, check **Settings → Pages → Build and deployment → Source: Deploy from a branch → `gh-pages` / root**.
+
+`vite.config.ts` uses `base: './'` and the app uses hash routing (`#/builder`), so it works under any repository name without server configuration.
 
 ## Project structure
 
