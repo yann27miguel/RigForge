@@ -121,6 +121,7 @@ const fr: Dict = {
     howTitle: 'Comment ça marche', how1: 'Choisissez un point de départ – vide, modèle ou assistant.', how2: 'Ajoutez des pièces ; le modèle 3D et les vérifications se mettent à jour.', how3: 'Lisez le guide, comparez, puis vérifiez les prix réels.',
   },
   builder: {
+    modeInstalled: 'Dans le boîtier', modeBench: 'Hors du boîtier', modeOpen: 'Sans boîtier', modeInstalledHint: 'Pièces montées dans le boîtier', modeBenchHint: 'Pièces posées sur un plan de travail devant le boîtier', modeOpenHint: 'Pièces montées, boîtier masqué', inspect: 'Hors du boîtier · glissez pour pivoter',
     slots: 'Vos composants', emptySlot: 'Non choisi', addPart: 'Ajouter : {cat}',
     explode: 'Vue éclatée', labels: 'Étiquettes', glass: 'Panneau latéral', rotate: 'Rotation auto', rgb: 'RGB', rgbStatic: 'Fixe', rgbBreathe: 'Respiration', rgbRainbow: 'Arc-en-ciel', rgbOff: 'Éteint',
     screenshot: 'Capture', viewFront: 'Face', viewSide: 'Côté', viewTop: 'Dessus', viewIso: '3/4', fanSpeed: 'Vitesse ventilos', xray: 'Rayons X',

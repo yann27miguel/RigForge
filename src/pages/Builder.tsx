@@ -1,10 +1,11 @@
-import { Box as BoxIcon, Camera, Eye, Layers, Library, Plus, RotateCcw, Rotate3d, Save, ScanEye, Share2, Tag, Trash2, Zap } from 'lucide-react'
+import { Box as BoxIcon, Camera, Eye, Layers, LayoutGrid, Library, PackageOpen, PcCase, Plus, RotateCcw, Rotate3d, Save, ScanEye, Share2, Tag, Trash2, Zap } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { FpsPanel, IssuesList, SlotList, SpecTable, StatusBadge } from '../components/builder/panels'
 import { CatBadge } from '../components/icons'
 import { PartGuide } from '../components/PartGuide'
 import { PriceLinks } from '../components/PriceLinks'
+import { PartInspector } from '../components/three/PartInspector'
 import { captureRef, Scene, type ViewName } from '../components/three/Scene'
 import { Button, Modal, Segmented, Toggle, cx } from '../components/ui'
 import { displayName, PRICE_DATE } from '../data/parts'
@@ -16,7 +17,7 @@ import { eur } from '../lib/format'
 import { estimatePower } from '../lib/power'
 import { decodeBuild, shareUrl, toMarkdown } from '../lib/share'
 import { useBuild } from '../store/build'
-import { useSettings, type RgbMode } from '../store/settings'
+import { useSettings, type RgbMode, type ViewMode } from '../store/settings'
 
 const SWATCHES = ['#38e8c6', '#7c8cff', '#ff3d7f', '#ff8a00', '#ffe600', '#00b7ff', '#ffffff', '#a855f7']
 
@@ -84,9 +85,16 @@ export default function Builder() {
         <Scene r={r} view={view} />
         {/* top overlay: views + display toggles */}
         <div className="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-          <div className="pointer-events-auto flex items-center gap-1.5">
+          <div className="pointer-events-auto flex flex-col items-start gap-2">
+          <Segmented<ViewMode> size="sm" value={settings.viewMode} onChange={(v) => { settings.set({ viewMode: v }); setView({ name: 'iso', n: view.n + 1 }) }} options={[
+            { id: 'installed', label: <span className="flex items-center gap-1" title={t('builder.modeInstalledHint')}><PcCase size={13} />{t('builder.modeInstalled')}</span> },
+            { id: 'bench', label: <span className="flex items-center gap-1" title={t('builder.modeBenchHint')}><LayoutGrid size={13} />{t('builder.modeBench')}</span> },
+            { id: 'open', label: <span className="flex items-center gap-1" title={t('builder.modeOpenHint')}><PackageOpen size={13} />{t('builder.modeOpen')}</span> },
+          ]} />
+          <div className="flex items-center gap-1.5">
             <Segmented<ViewName> size="sm" value={view.name} onChange={(v) => setView({ name: v, n: view.n + 1 })} options={[{ id: 'iso', label: t('builder.viewIso') }, { id: 'side', label: t('builder.viewSide') }, { id: 'front', label: t('builder.viewFront') }, { id: 'top', label: t('builder.viewTop') }]} />
             <button onClick={() => setView({ name: view.name, n: view.n + 1 })} title={t('common.reset')} aria-label={t('common.reset')} className="glass grid size-8 place-items-center rounded-lg border border-ink/10 text-mute hover:text-ink"><RotateCcw size={14} /></button>
+          </div>
           </div>
           <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
             <Toggle compact on={settings.labels} onChange={(v) => settings.set({ labels: v })} label={t('builder.labels')} icon={<Tag size={13} />} />
@@ -112,7 +120,7 @@ export default function Builder() {
         )}
         <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-2">
         <div className="glass pointer-events-auto flex max-w-full items-center gap-x-4 gap-y-2 self-start overflow-x-auto rounded-2xl border border-ink/10 px-3 py-2 text-xs whitespace-nowrap">
-          <label className="flex items-center gap-2"><Layers size={14} className="text-accent" /><span className="text-mute">{t('builder.explode')}</span>
+          <label className={cx('flex items-center gap-2', settings.viewMode === 'bench' && 'pointer-events-none opacity-40')}><Layers size={14} className="text-accent" /><span className="text-mute">{t('builder.explode')}</span>
             <input type="range" min={0} max={1} step={0.01} value={settings.explode} onChange={(e) => settings.set({ explode: Number(e.target.value) })} className="w-24" /></label>
           <label className="hidden items-center gap-2 sm:flex"><span className="text-mute">{t('builder.fanSpeed')}</span>
             <input type="range" min={0} max={1} step={0.01} value={settings.fanSpeed} onChange={(e) => settings.set({ fanSpeed: Number(e.target.value) })} className="w-20" /></label>
@@ -218,7 +226,8 @@ function GuideTab({ focus, r, setFocus, openPicker }: { focus: Category | null; 
     <div className="space-y-5">
       {parts.map((p) => (
         <div key={p.id} className="space-y-3 rounded-2xl border border-accent/25 bg-accent/[0.04] p-4">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-accent">{t('detail.thisPart')}</div>
+          <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider"><span className="text-accent">{t('detail.thisPart')}</span><span className="font-medium normal-case tracking-normal text-mute">{t('builder.inspect')}</span></div>
+          <div className="viewer-bg h-52 overflow-hidden rounded-xl border border-ink/10"><PartInspector r={r} cat={p.category} storageId={p.category === 'storage' ? p.id : undefined} /></div>
           <div className="flex items-start justify-between gap-3">
             <div className="font-display text-base font-semibold leading-snug">{displayName(p)}</div>
             <div className="text-right"><div className="font-display text-lg font-bold tabular-nums">{eur(p.price, lang)}</div><div className="text-[10px] text-mute">{t('common.refPrice')} · {PRICE_DATE}</div></div>

@@ -5,7 +5,13 @@ import * as THREE from 'three'
 import type { Category } from '../../data/types'
 import { useBuild } from '../../store/build'
 import { useSettings } from '../../store/settings'
+import type { ViewMode } from '../../store/settings'
 import type { V3 } from './layout'
+
+export interface Bounds {
+  size: V3
+  center: V3
+}
 
 interface Props {
   cat: Category
@@ -16,9 +22,13 @@ interface Props {
   /** key that changes when the part changes, to re-measure bounds */
   partKey?: string
   interactive?: boolean
+  mode?: ViewMode
+  /** where the part's centre should sit when laid out of the case (bench mode) */
+  benchTarget?: V3 | null
+  onBounds?: (cat: Category, b: Bounds | null) => void
 }
 
-export function PartGroup({ cat, label, sub, explodeDir, children, partKey, interactive = true }: Props) {
+export function PartGroup({ cat, label, sub, explodeDir, children, partKey, interactive = true, mode = 'installed', benchTarget, onBounds }: Props) {
   const outer = useRef<THREE.Group>(null)
   const inner = useRef<THREE.Group>(null)
   const [hover, setHover] = useState(false)
@@ -29,7 +39,7 @@ export function PartGroup({ cat, label, sub, explodeDir, children, partKey, inte
   const showLabels = useSettings((s) => s.labels)
   const intro = useRef(0)
   const lastSeen = useRef(0)
-  const [bounds, setBounds] = useState<{ size: V3; center: V3 } | null>(null)
+  const [bounds, setBounds] = useState<Bounds | null>(null)
 
   useLayoutEffect(() => {
     if (lastAdded && lastAdded.at !== lastSeen.current && (lastAdded.cat === cat || lastAdded.cat === 'all')) {
@@ -49,14 +59,20 @@ export function PartGroup({ cat, label, sub, explodeDir, children, partKey, inte
         if ((o as THREE.Mesh).isMesh && !o.userData.noBounds) box.expandByObject(o)
       })
       inner.current.position.copy(prev)
-      if (box.isEmpty()) return setBounds(null)
+      if (box.isEmpty()) {
+        setBounds(null)
+        onBounds?.(cat, null)
+        return
+      }
       const parentInv = new THREE.Matrix4().copy(outer.current!.matrixWorld).invert()
       box.applyMatrix4(parentInv)
       const s = new THREE.Vector3()
       const c = new THREE.Vector3()
       box.getSize(s)
       box.getCenter(c)
-      setBounds({ size: [s.x + 0.04, s.y + 0.04, s.z + 0.04], center: [c.x, c.y, c.z] })
+      const b: Bounds = { size: [s.x + 0.04, s.y + 0.04, s.z + 0.04], center: [c.x, c.y, c.z] }
+      setBounds(b)
+      onBounds?.(cat, b)
     })
     return () => cancelAnimationFrame(id)
   }, [partKey])
@@ -64,9 +80,15 @@ export function PartGroup({ cat, label, sub, explodeDir, children, partKey, inte
   useFrame((_, dt) => {
     if (!inner.current) return
     intro.current = THREE.MathUtils.damp(intro.current, 0, 3.2, dt)
-    const k = explode * 1.6 + intro.current * 2.2
-    const t = new THREE.Vector3(explodeDir[0] * k, explodeDir[1] * k, explodeDir[2] * k)
-    inner.current.position.lerp(t, 1 - Math.exp(-dt * 10))
+    let t: THREE.Vector3
+    if (mode === 'bench' && benchTarget && bounds) {
+      // lay the part out in front of the case, sitting on the bench
+      t = new THREE.Vector3(benchTarget[0] - bounds.center[0], benchTarget[1] - bounds.center[1] + intro.current * 1.2, benchTarget[2] - bounds.center[2])
+    } else {
+      const k = (mode === 'bench' ? 0 : explode) * 1.6 + intro.current * 2.2
+      t = new THREE.Vector3(explodeDir[0] * k, explodeDir[1] * k, explodeDir[2] * k)
+    }
+    inner.current.position.lerp(t, 1 - Math.exp(-dt * (mode === 'bench' ? 6 : 10)))
   })
 
   const edges = useMemo(() => (bounds ? new THREE.EdgesGeometry(new THREE.BoxGeometry(...bounds.size)) : null), [bounds])
@@ -99,7 +121,7 @@ export function PartGroup({ cat, label, sub, explodeDir, children, partKey, inte
             <lineBasicMaterial color={focus ? '#38e8c6' : '#a5b4fc'} transparent opacity={0.9} depthTest={false} />
           </lineSegments>
         )}
-        {bounds && ((showLabels && cat !== 'case') || hover) && (
+        {bounds && (((showLabels || mode === 'bench') && cat !== 'case' && !(mode === 'bench' && cat === 'fans')) || hover) && (
           <Html position={cat === 'case' ? [bounds.center[0], bounds.center[1] + bounds.size[1] / 2 + 0.05, bounds.center[2]] : [bounds.center[0], bounds.center[1], bounds.center[2] + bounds.size[2] / 2]} center distanceFactor={9} zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
             <div className="whitespace-nowrap rounded-lg border border-ink/15 bg-slate-950/85 px-2.5 py-1 text-[11px] leading-tight text-white shadow-lg backdrop-blur">
               <div className="font-semibold text-teal-300">{label}</div>

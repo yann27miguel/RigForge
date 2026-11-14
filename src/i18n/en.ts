@@ -119,6 +119,7 @@ const en = {
     howTitle: 'How it works', how1: 'Choose a starting point – blank, a preset or the assistant.', how2: 'Add parts; the 3D model and checks update instantly.', how3: 'Read the guide, compare options, then check live prices.',
   },
   builder: {
+    modeInstalled: 'In case', modeBench: 'Out of case', modeOpen: 'No case', modeInstalledHint: 'Parts installed inside the case', modeBenchHint: 'Parts laid out on a workbench in front of the case', modeOpenHint: 'Parts installed, case hidden', inspect: 'Out of the case · drag to rotate',
     slots: 'Your parts', emptySlot: 'Not selected', addPart: 'Add {cat}',
     explode: 'Exploded view', labels: 'Labels', glass: 'Side panel', rotate: 'Auto-rotate', rgb: 'RGB', rgbStatic: 'Static', rgbBreathe: 'Breathing', rgbRainbow: 'Rainbow', rgbOff: 'Off',
     screenshot: 'Screenshot', viewFront: 'Front', viewSide: 'Side', viewTop: 'Top', viewIso: '3/4', fanSpeed: 'Fan speed', xray: 'X-ray',

@@ -10,6 +10,8 @@ function detectLang(): Lang {
 
 export type RgbMode = 'static' | 'breathe' | 'rainbow' | 'off'
 export type ThemeMode = 'dark' | 'light' | 'system'
+/** installed = parts inside the case · bench = parts laid out in front of the case · open = parts installed, case hidden */
+export type ViewMode = 'installed' | 'bench' | 'open'
 
 interface SettingsState {
   lang: Lang
@@ -17,6 +19,7 @@ interface SettingsState {
   rgbColor: string
   rgbMode: RgbMode
   explode: number
+  viewMode: ViewMode
   labels: boolean
   glass: boolean
   autoRotate: boolean
@@ -35,6 +38,7 @@ export const useSettings = create<SettingsState>()(
       rgbColor: '#38e8c6',
       rgbMode: 'rainbow',
       explode: 0,
+      viewMode: 'installed',
       labels: false,
       glass: true,
       autoRotate: false,

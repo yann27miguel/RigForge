@@ -121,6 +121,7 @@ const de: Dict = {
     howTitle: 'So funktioniert’s', how1: 'Startpunkt wählen – leer, Vorlage oder Kaufberater.', how2: 'Teile hinzufügen; 3D-Modell und Prüfungen aktualisieren sich sofort.', how3: 'Guide lesen, Optionen vergleichen, dann Live-Preise prüfen.',
   },
   builder: {
+    modeInstalled: 'Im Gehäuse', modeBench: 'Außerhalb', modeOpen: 'Ohne Gehäuse', modeInstalledHint: 'Teile im Gehäuse eingebaut', modeBenchHint: 'Teile auf einer Werkbank vor dem Gehäuse ausgelegt', modeOpenHint: 'Teile eingebaut, Gehäuse ausgeblendet', inspect: 'Außerhalb des Gehäuses · ziehen zum Drehen',
     slots: 'Deine Komponenten', emptySlot: 'Nicht gewählt', addPart: '{cat} hinzufügen',
     explode: 'Explosionsansicht', labels: 'Beschriftung', glass: 'Seitenteil', rotate: 'Auto-Drehung', rgb: 'RGB', rgbStatic: 'Statisch', rgbBreathe: 'Atmen', rgbRainbow: 'Regenbogen', rgbOff: 'Aus',
     screenshot: 'Screenshot', viewFront: 'Front', viewSide: 'Seite', viewTop: 'Oben', viewIso: '3/4', fanSpeed: 'Lüftertempo', xray: 'Röntgen',
